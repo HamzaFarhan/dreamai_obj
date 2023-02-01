@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "dreamai_obj"
+  site-url: "https://HamzaFarhan.github.io/dreamai_obj"
+  description: "Object Detection using dreamai."
+  repo-branch: main
+  repo-url: "https://github.com/HamzaFarhan/dreamai_obj"
