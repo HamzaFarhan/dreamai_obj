@@ -43,8 +43,9 @@ def distance_to_camera(width, focal_len, pixel_width):
 
 def detect_obstacles_3(model, img, targets=[], alert=True, h_limit=1024, show=False, box_thicknes=7,
                        avoidance_x=0, avoidance_y=0.5, avoidance_w=0.5, avoidance_h=0.5, obj_h_limit=0.5,
-                       conf=0.3, overlap_limit=0):
+                       conf=0.3, overlap_limit=0, color='red'):
     
+    color = color_to_rgb(color)
     img = copy.deepcopy(img)
     h,w = get_hw(img)
     if h > h_limit:
@@ -98,8 +99,8 @@ def detect_obstacles_3(model, img, targets=[], alert=True, h_limit=1024, show=Fa
                 print(f'Area: {c_area}, x: {x1}, y: {y1}, bw: {bw}, bh: {bh}')
             # try:
             txt_y = y1 - 10 if y1 - 10 > 10 else y1 + 10
-            cv2.putText(img, cat, (x1, txt_y), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255,0,0), 2)
-            cv2.rectangle(img, (x1,y1), (x2,y2), (255,0,0), box_thicknes)
+            cv2.putText(img, cat, (x1, txt_y), cv2.FONT_HERSHEY_SIMPLEX, 0.65, color, 2)
+            cv2.rectangle(img, (x1,y1), (x2,y2), color, box_thicknes)
             # except:
                 # pass
             if show:
