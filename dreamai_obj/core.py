@@ -115,16 +115,19 @@ def detect_obstacles_3(model, img, targets=[], alert=True, h_limit=1024, show=Fa
     torch.cuda.empty_cache()
     return img, cat_boxes
 
-def get_face_coords(model, img, conf=0.3, h_factor=3):
+def get_face_coords(model, img, conf=0.3, h_factor=0.5):
     if path_or_str(img):
         img = rgb_read(img)
+    h,w = get_hw(img)
     boxes, cats = obj_detect(model, img, conf=conf)
     face_coords = []
     for box,cat in zip(boxes, cats):
         if cat == 'person':
             x1, y1, x2, y2 = [int(x) for x in box]
-            h = y2-y1
-            face_coords.append([y1, int((y1+h*h_factor)+5), x1, x2])
+            bh = y2-y1
+            bw = x2-x1
+            h_factor = max(h_factor, bw/w)
+            face_coords.append([y1, int((y1+bh*h_factor)+5), x1, x2])
     # print(face_coords)
     return face_coords
 
@@ -145,7 +148,7 @@ def enumerate2(xs, start=0, step=1):
         yield (start, x)
         start += step
 
-def blur_faces_video(model, video, conf=0.3, h_factor=2, kernel=35, step=3):
+def blur_faces_video(model, video, conf=0.3, h_factor=0.5, kernel=35, step=3):
     if path_or_str(video):
         video = mp.VideoFileClip(video)
     frames = []
