@@ -1,0 +1,23 @@
+[
+  {
+    "objectID": "core.html",
+    "href": "core.html",
+    "title": "core",
+    "section": "",
+    "text": "source"
+  },
+  {
+    "objectID": "core.html#blurring-faces-in-a-video",
+    "href": "core.html#blurring-faces-in-a-video",
+    "title": "core",
+    "section": "Blurring faces in a video",
+    "text": "Blurring faces in a video\n\nmodel = obj_model()\nv = mp.VideoFileClip('../videos/coffee.mp4')\nv2 = blur_faces_video(model, v, conf=0.3, h_factor=0.6, kernel=75, step=5)\nv2.ipython_display()\n\nMoviepy - Building video __temp__.mp4.\nMoviepy - Writing video __temp__.mp4\n\n\n\n                                                               \n\n\nMoviepy - Done !\nMoviepy - video ready __temp__.mp4\n\n\n\n\n\n\nSorry, seems like your browser doesn't support HTML5 audio/video"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "dreamai_obj",
+    "section": "",
+    "text": "pip install dreamai_obj"
+  }
+]
