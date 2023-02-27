@@ -115,7 +115,7 @@ def detect_obstacles_3(model, img, targets=[], alert=True, h_limit=1024, show=Fa
     torch.cuda.empty_cache()
     return img, cat_boxes
 
-def get_face_coords(model, img, conf=0.3, h_div=3):
+def get_face_coords(model, img, conf=0.3, h_factor=3):
     if path_or_str(img):
         img = rgb_read(img)
     boxes, cats = obj_detect(model, img, conf=conf)
@@ -124,7 +124,8 @@ def get_face_coords(model, img, conf=0.3, h_div=3):
         if cat == 'person':
             x1, y1, x2, y2 = [int(x) for x in box]
             h = y2-y1
-            face_coords.append([y1, (y1+h//h_div)+5, x1, x2])
+            face_coords.append([y1, int((y1+h*h_factor)+5), x1, x2])
+    # print(face_coords)
     return face_coords
 
 def blur(img, coords, kernel=35):
@@ -132,6 +133,10 @@ def blur(img, coords, kernel=35):
         img = rgb_read(img)
     for c in coords:
         sub = img[c[0]:c[1], c[2]:c[3]]
+        h = c[1]-c[0]
+        kernel = int(max(kernel, h*0.15))
+        if not kernel % 2:
+            kernel += 1
         img[c[0]:c[1], c[2]:c[3]] = cv2.GaussianBlur(sub, (kernel, kernel), 100)
     return img
 
@@ -140,14 +145,14 @@ def enumerate2(xs, start=0, step=1):
         yield (start, x)
         start += step
 
-def blur_faces_video(model, video, conf=0.3, h_div=2, kernel=35, step=3):
+def blur_faces_video(model, video, conf=0.3, h_factor=2, kernel=35, step=3):
     if path_or_str(video):
         video = mp.VideoFileClip(video)
     frames = []
     idx = 0
     for frame in video.iter_frames():
         if idx % step == 0:
-            coords = get_face_coords(model, frame, conf=conf, h_div=h_div)
+            coords = get_face_coords(model, frame, conf=conf, h_factor=h_factor)
         frames.append(blur(frame.copy(), coords, kernel=kernel))
         idx += 1
     return mp.ImageSequenceClip(frames, fps=video.fps)
