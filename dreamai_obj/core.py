@@ -124,15 +124,15 @@ def get_face_coords(model, img, conf=0.3, h_div=3):
         if cat == 'person':
             x1, y1, x2, y2 = [int(x) for x in box]
             h = y2-y1
-            face_coords.append([y1, y1+h//h_div, x1, x2])
+            face_coords.append([y1, (y1+h//h_div)+5, x1, x2])
     return face_coords
 
-def blur(img, coords):
+def blur(img, coords, kernel=35):
     if path_or_str(img):
         img = rgb_read(img)
     for c in coords:
         sub = img[c[0]:c[1], c[2]:c[3]]
-        img[c[0]:c[1], c[2]:c[3]] = cv2.GaussianBlur(sub, (35,35), 100)
+        img[c[0]:c[1], c[2]:c[3]] = cv2.GaussianBlur(sub, (kernel, kernel), 100)
     return img
 
 def enumerate2(xs, start=0, step=1):
@@ -140,15 +140,15 @@ def enumerate2(xs, start=0, step=1):
         yield (start, x)
         start += step
 
-def blur_faces_video(model, video, conf=0.3, h_div=2):
+def blur_faces_video(model, video, conf=0.3, h_div=2, kernel=35, step=3):
     if path_or_str(video):
         video = mp.VideoFileClip(video)
     frames = []
     idx = 0
     for frame in video.iter_frames():
-        if idx % 3 == 0:
+        if idx % step == 0:
             coords = get_face_coords(model, frame, conf=conf, h_div=h_div)
-        frames.append(blur(frame.copy(), coords))
+        frames.append(blur(frame.copy(), coords, kernel=kernel))
         idx += 1
     return mp.ImageSequenceClip(frames, fps=video.fps)
 
