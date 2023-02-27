@@ -126,7 +126,7 @@ def blur_face(model, img, conf=0.3, h_div=3):
             img[face_coords[0]:face_coords[1], face_coords[2]:face_coords[3]] = cv2.GaussianBlur(face, (35,35), 100)
     return img
 
-def blur_faces(model, video, conf=0.3, h_div=3):
+def blur_faces(model, video, conf=0.3, h_div=2):
     if path_or_str(video):
         video = mp.VideoFileClip(video)
     frames = [blur_face(model, frame.copy(), conf=conf, h_div=h_div) for frame in video.iter_frames()]
